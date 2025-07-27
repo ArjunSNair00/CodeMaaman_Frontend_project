@@ -35,6 +35,7 @@
   }
 
   .meme-text {
+    position: absolute;  /* <-- Add this */
     font-size: 24px;
     font-weight: bold;
     text-align: center;
@@ -43,8 +44,17 @@
     -webkit-text-stroke: 1.5px black;
     z-index: 5;
     pointer-events: none;
+    width: 100%;  /* Ensure it stretches across the emoji */
   }
-  
+
+    #topText {
+    top: 10px;
+  }
+
+  #bottomText {
+    bottom: 10px;
+  }
+
   #emoji img{
   position: absolute;
   top: 0;
@@ -78,6 +88,8 @@
   #settings {
     display: flex; 
     width: 50%;
+    max-height: 600px; /* 👈 Adjust as needed */
+    overflow-y: auto;  /* 👈 Enables vertical scroll */
     background: rgba(255, 255, 255, 0.1);
     padding: 20px;
     border-radius: 10px;
@@ -85,10 +97,12 @@
     font-family: sans-serif;
     flex-direction: column;
   }
-    input[type="range"] { /*for some reason slider was getting stuck*/
-    position: relative;
-    width: 200px;
-    z-index: 10;
+
+
+  input[type="range"] { /*for some reason slider was getting stuck*/
+  position: relative;
+  width: 200px;
+  z-index: 10;
   }
   #sliders_wrap{
     display: flex;
@@ -109,55 +123,12 @@
   #emotion_mix {
     display: none;
   }
-
-  #tabs {
-  display: flex;
-  background: #222;
-  border-bottom: 2px solid #555;
-  font-family: sans-serif;
-  margin-bottom: 10px;
-}
-
-.tab {
-  padding: 10px 20px;
-  background: #333;
-  color: white;
-  cursor: pointer;
-  border-right: 1px solid #555;
-}
-
-.tab.active {
-  background: #fff;
-  color: #000;
-  font-weight: bold;
-}
-
-.tab-content {
-  display: none;
-  background: rgba(255, 255, 255, 0.1);
-  padding: 20px;
-  border-radius: 10px;
-  color: white;
-  font-family: sans-serif;
-  flex-direction: column;
-}
-
-.tab-content[data-tab="emotion"] {
-  display: flex;
-}
-
   </style>
 </head>
 <body>
 
 <div class="emoji_gen">
 <h1 id="title">Random Emoji Generator</h1>
-
-  <div id="tabs">
-    <div class="tab active" onclick="switchTab('emotion')">Emotion</div>
-    <div class="tab" onclick="switchTab('caption')">Text</div>
-  </div>
-
   <div id="emoji_output">
     <div id="emoji">
     <div class="meme-text" id="topText">Top Text</div>
@@ -169,7 +140,7 @@
     <div class="meme-text" id="bottomText">Bottom Text</div>
   </div>
 
-  <div id="settings" class="tab-content" data-tab="emotion">
+  <div id="settings">
     <h2>Select Emotion</h2>
     <select id="emotions">
       <option value="happy">Happy</option>
@@ -217,26 +188,34 @@
           <label><span id="sad_value">100</span>%</label>
           <input type="range" id="sad_prob" min="0" max="100" value="100" oninput="update_label(this, 'sad_value')">
         </div>
-        <!-- <span id="debug"></span> -->
       </div>
     </div>
-  <button id="Randomize" onclick="if (currentMode==='emotion') rand(); else randomizeCaptions();">Randomize</button>
+  <button id="Randomize" onclick="rand(); randomizeCaptions();">Randomize</button>
+
+  <h2>Emotion Captions</h2>
+  <div>
+    <strong>Happy</strong><br>
+    Top: <input type="text" id="custom_happy_top" value="Feeling great!"><br>
+    Bottom: <input type="text" id="custom_happy_bottom" value="Keep smiling!"><br>
+  </div>
+  <div>
+    <strong>Sad</strong><br>
+    Top: <input type="text" id="custom_sad_top" value="Not my day..."><br>
+    Bottom: <input type="text" id="custom_sad_bottom" value="Feeling blue."><br>
+  </div>
+  <div>
+    <strong>Angry</strong><br>
+    Top: <input type="text" id="custom_angry_top" value="So annoyed!"><br>
+    Bottom: <input type="text" id="custom_angry_bottom" value="Back off!"><br>
+  </div>
+  <label>
+    <input type="checkbox" id="separate_caption_random">
+    Randomize top & bottom separately
+  </label>
+
   </div>
 
-<div id="caption_tab" class="tab-content" data-tab="caption" style="display:none">
-  <h2>Emotion Captions</h2>
-
-  <label>Top Text: <input type="text" id="caption_top" oninput="document.getElementById('topText').textContent = this.value" /></label>
-
-  <label><input type="text" id="caption_bottom" oninput="document.getElementById('bottomText').textContent = this.value" /></label>
-
-  <label><input type="checkbox" id="separate_caption_random"> Randomize top & bottom separately</label>
-  <button onclick="randomizeCaptions()">Randomize Top/Bottom Text</button>
-</div>
-
-
 <script>
-let currentMode = 'emotion'; 
 const last_chosen = {};
 
 function rand() {
@@ -273,7 +252,6 @@ const em_parts = {
 
 const parts = ["face", "mouth", "eyes", "eyebrows", "other"];
 
-let debug="image: ";
 let random_i={};
 for (let i = 0; i < parts.length; i++) {
   const part_id = parts[i];
@@ -300,7 +278,6 @@ for (let i = 0; i < parts.length; i++) {
 
   const path = `emojis/${part_id}/${emotion_pick}/${r}.svg`;
 
-  debug += `${path}, `;
   random_i[part_id] = r;
   if (part_id === "other") 
   {
@@ -319,7 +296,6 @@ for (let i = 0; i < parts.length; i++) {
     document.getElementById(part_id).innerHTML=`<img src="${path}" alt="${part_id}"/>`;
   }
 }
-document.getElementById("debug").textContent=debug;
 }
 
 function update_label(slider, labelId) {
@@ -371,23 +347,8 @@ window.onload = () => {
   update_e_mix_visiblity();
 
   rand();
-  switchTab('emotion');
+  randomizeCaptions();
 };
-
-function switchTab(tabName) {
-  // Update tab content visibility
-  document.querySelectorAll('.tab-content').forEach(el => {
-    el.style.display = el.dataset.tab === tabName ? 'flex' : 'none';
-  });
-
-  // Update tab active state
-  document.querySelectorAll('.tab').forEach(el => {
-    el.classList.toggle('active', el.textContent.toLowerCase() === tabName);
-  });
-
-  // Change current mode logic
-  currentMode = tabName;
-}
 
 const captionData = {
   happy: [
@@ -415,7 +376,6 @@ function getRandomCaption(emotion) {
   return captions[Math.floor(Math.random() * captions.length)];
 }
 
-
 function randomizeCaptions() {
   const separate = document.getElementById("separate_caption_random").checked;
   const emotionSelect = document.getElementById("emotions");
@@ -434,19 +394,30 @@ function randomizeCaptions() {
     topEmotion = bottomEmotion = emotion;
   }
 
-  let topCaption = getRandomCaption(topEmotion);
-  let bottomCaption;
+  function getCustomOrRandom(emotion, position) {
+    const inputId = `custom_${emotion}_${position}`;
+    const custom = document.getElementById(inputId);
+    if (custom && custom.value.trim()) {
+      return custom.value.trim();
+    }
+    return getRandomCaption(emotion);
+  }
 
-  do {
-    bottomCaption = getRandomCaption(bottomEmotion);
-  } while (topCaption === bottomCaption);
+  let topCaption = getCustomOrRandom(topEmotion, 'top');
+  let bottomCaption = getCustomOrRandom(bottomEmotion, 'bottom');
 
-  document.getElementById("caption_top").value = topCaption;
-  document.getElementById("caption_bottom").value = bottomCaption;
+  if (topCaption === bottomCaption && topEmotion === bottomEmotion) {
+    const tries = 5;
+    for (let i = 0; i < tries && bottomCaption === topCaption; i++) {
+      bottomCaption = getCustomOrRandom(bottomEmotion, 'bottom');
+    }
+  }
 
+  // ✅ Only update text on the emoji
   document.getElementById("topText").textContent = topCaption;
   document.getElementById("bottomText").textContent = bottomCaption;
 }
+
 
 </script>
 </body>
