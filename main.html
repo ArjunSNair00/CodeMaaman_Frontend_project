@@ -51,8 +51,8 @@
 <div id="emoji">
 <span id="face"></span>
 <span id="mouth"></span>
-<span id="eyes"></span>
 <span id="eyebrows"></span>
+<span id="eyes"></span>
 <span id="other"></span>
 </div>
 <button id="Randomize" onclick="rand()">Randomize</button>
@@ -64,10 +64,10 @@ function rand(){
   // const emojis=["😀","😃","😄","😁","😆","😅","😂","🤣","🥲","🥹","☺️","😇"];
   // const r=Math.floor(Math.random()*emojis.length)
   // const count=1
-  const count_m=5;
-  const count_e=5;
+  const count_m=9;
+  const count_e=8;
   const count_eb=2;
-  const count_o=2;
+  const count_o=3;
   const count_f=2;
   const emotion="happy";
   const r_f=Math.floor(Math.random()*count_f);
@@ -90,7 +90,7 @@ function rand(){
   document.getElementById("mouth").innerHTML=`<img src="${mouth}" alt="mouth" />`;
   document.getElementById("eyes").innerHTML=`<img src="${eyes}" alt="eyes" />`;
   document.getElementById("eyebrows").innerHTML=`<img src="${eyebrows}" alt="eyebrows" />`;
-  if (r_m==4){
+  if (r_m==4 & (r_o==0 | r_o==1 | r_o==2)){
     document.getElementById("other").innerHTML=`<img src="${other}" alt="other" />`;
   }
   else{
