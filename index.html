@@ -85,6 +85,14 @@
     flex-direction: column;
     gap: 10px;
   }
+  select{
+    color:rgb(255, 177, 60);
+    font-size: 30px;
+    font-weight:bold;
+  }
+  #emotion_mix {
+    display: none;
+  }
   </style>
 </head>
 <body>
@@ -106,6 +114,7 @@
     <select id="emotions">
       <option value="happy">Happy</option>
       <option value="sad">Sad</option>
+      <option value="random" selected>Random</option>
     </select>
 
     <div id="sliders_wrap">
@@ -165,10 +174,10 @@ const other_prob = parseInt(document.getElementById("other_prob").value);
 
 const happy_mix = parseInt(document.getElementById("happy_prob").value);
 const sad_mix = parseInt(document.getElementById("sad_prob").value);
-const totalMix = happy_mix + sad_mix;
+const total_mix = happy_mix + sad_mix || 1;
 const prob_distribution = {
-  happy: happy_mix / totalMix,
-  sad: sad_mix / totalMix
+  happy: happy_mix / total_mix,
+  sad: sad_mix / total_mix
 };
 
 const em_parts = {
@@ -244,7 +253,7 @@ document.getElementById(labelId).textContent = slider.value;}
 
 
 
-function preloadImages() {
+function preload_imgs() {
   const em_parts = {
     happy: {
       face: 2,
@@ -275,10 +284,20 @@ function preloadImages() {
 }
 
 window.onload = () => {
-  preloadImages(); 
-  rand();           
-};
+  preload_imgs();
 
+  const e_mix = document.getElementById("emotion_mix");
+  const e_select = document.getElementById("emotions");
+
+  function update_e_mix_visiblity() {
+    e_mix.style.display = (e_select.value === "random") ? "flex" : "none";
+  }
+
+  e_select.addEventListener("change", update_e_mix_visiblity);
+  update_e_mix_visiblity();
+
+  rand();
+};
 </script>
 </body>
 </html>
