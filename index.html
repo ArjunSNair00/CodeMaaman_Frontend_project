@@ -7,6 +7,8 @@
     /* margin: 0; */
   }
   #title{
+    display: flex;
+    justify-content: center;
     font-family:fantasy;
     color:rgb(255, 177, 60);
     margin: 0; 
@@ -57,12 +59,18 @@
     padding: 20px;
   }
   #emotion_selector {
-    flex: 1 1 45%;
+    display: flex;
+    /* flex: 1 1 45%; */
     background: rgba(255, 255, 255, 0.1);
     padding: 20px;
     border-radius: 10px;
     color: white;
     font-family: sans-serif;
+    flex-direction: column;
+  }
+    input[type="range"] { /*for some reason slider was getting stuck*/
+    position: relative;
+    z-index: 10;
   }
   </style>
 </head>
@@ -78,18 +86,49 @@
     <span id="other"></span>
   </div>
   <div id="emotion_selector">
-    <h3>Select Emotion</h3>
+    <h2>Select Emotion</h2>
     <select id="emotions">
       <option value="happy">Happy</option>
       <option value="sad">Sad</option>
     </select>
+    <h2>Randomness Sliders</h2>
+
+    <div class="slider_group">
+      <h4>Eyes: </h4>
+      <span id="eyes_value">100</span>
+      <input type="range" id="eyes_prob" min="0" max="100" value="100" oninput="update_label(this, 'eyes_value')">
+    </div>
+
+    <div class="slider_group">
+      <h4>Eyebrows: </h4>
+      <span id="eyeb_value">100</span>
+      <input type="range" id="eyeb_prob" min="0" max="100" value="100" oninput="update_label(this, 'eyeb_value')">
+    </div>
+
+    <div class="slider_group">
+      <h4>Mouth: </h4>
+      <span id="mouth_value">100</span>
+      <input type="range" id="mouth_prob" min="0" max="100" value="100" oninput="update_label(this, 'mouth_value')">
+    </div>
+
+    <div class="slider_group">
+      <h4>Other: </h4>
+      <span id="other_value">100</span>
+      <input type="range" id="other_prob" min="0" max="100" value="100" oninput="update_label(this, 'other_value')">
+    </div>
+
     <button id="Randomize" onclick="rand()">Randomize</button>
     <!-- <span id="debug"></span> -->
   </div>
 </div>
 
 <script>
+const last_chosen = {};
 function rand() {
+const eyes_prob = parseInt(document.getElementById("eyes_prob").value);
+const mouth_prob = parseInt(document.getElementById("mouth_prob").value);
+const eyebrows_prob = parseInt(document.getElementById("eyeb_prob").value);
+const other_prob = parseInt(document.getElementById("other_prob").value);
 const emotion=document.getElementById("emotions").value;
 let parts=[]
 
@@ -105,7 +144,7 @@ parts = [
 if (emotion=="sad"){
 parts = [ 
 {id:"face",count:2},
-{id:"mouth",count:1},
+{id:"mouth",count:4},
 {id:"eyes",count:2},
 {id:"eyebrows",count:2},
 {id:"other",count:1}
@@ -115,8 +154,29 @@ let debug="image: ";
 let random_i={};
 for (let i = 0;i<parts.length;i++) {
   const part = parts[i];
-  const r = Math.floor(Math.random() * part.count);
+  let r;
+  let prob = 100;
+  if (part.id==="eyes") 
+    prob = eyes_prob;
+  if (part.id==="mouth") 
+    prob = mouth_prob;
+  if (part.id==="eyebrows") 
+    prob = eyebrows_prob;
+  if (part.id==="other") 
+    prob = other_prob;
+
+  if (prob===0 && last_chosen[part.id]!==undefined) {
+    r=last_chosen[part.id];
+  } else if (prob < 100) {
+    const shouldRandomize = Math.random()*100<prob;
+    r=shouldRandomize ? Math.floor(Math.random()*part.count):(last_chosen[part.id]??0);
+  } else {
+    r=Math.floor(Math.random()*part.count);
+  }
+  last_chosen[part.id] = r;
+
   const path = `emojis/${part.id}/${emotion}/${r}.svg`;
+
   debug += `${path}, `;
   random_i[part.id] = r;
   if (part.id === "other") 
@@ -139,6 +199,9 @@ for (let i = 0;i<parts.length;i++) {
 document.getElementById("debug").textContent=debug;
 }
 window.onload=rand;
+function update_label(slider, labelId) {
+document.getElementById(labelId).textContent = slider.value;
+  }
 </script>
 </body>
 </html>

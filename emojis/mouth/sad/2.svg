@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 48 48">
+  <!-- Generator: Adobe Illustrator 29.6.1, SVG Export Plug-In . SVG Version: 2.1.1 Build 9)  -->
+  <defs>
+    <style>
+      .st0 {
+        display: none;
+        opacity: .57;
+      }
+
+      .st1 {
+        fill: #ffce52;
+      }
+
+      .st2 {
+        opacity: .18;
+      }
+
+      .st3 {
+        fill: #273941;
+      }
+    </style>
+  </defs>
+  <g id="Layer_1" class="st0">
+    <g id="_21-hungry" class="st2">
+      <circle class="st1" cx="24" cy="24" r="23"/>
+      <ellipse class="st3" cx="33" cy="16" rx="3" ry="4"/>
+      <ellipse class="st3" cx="15" cy="16" rx="3" ry="4"/>
+      <path class="st3" d="M9,26c0-.83,6.71-1,15-1s15,.17,15,1h0c0,6.75-8.18,11-15,11h0c-6.82,0-15-4.25-15-11Z"/>
+    </g>
+  </g>
+  <g id="Layer_2">
+    <rect class="st3" x="13.91" y="28.97" width="20.17" height="1.34"/>
+  </g>
+</svg>
