@@ -9,6 +9,7 @@
     #title{
       color:rgb(255, 177, 60);
       margin: 0;
+      font-size: 80px;
       /* height: 100vh; */
     }
     .emoji_gen{
@@ -16,6 +17,20 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
+    }
+    #emoji{
+      font-size: 200px;
+    }
+    #Randomize{
+      font-size: 30px;
+      color:yellow;
+      background: orange;
+    }
+    #Randomize:hover{
+      background: rgb(218, 141, 0);
+    }
+    #Randomize:active{
+      color:red;
     }
   </style>
 </head>
@@ -30,11 +45,12 @@
 <script>
 function rand(){
   const emojis=["😄", "🤖", "🚀", "😎"];
-  const r=Math.floor(Math.random()*10)+1
-  console.log(r)
-  document.getElementById("debug").innerHTML=`Random float: ${r}`;
-  document.getElementById("emoji").innerHTML="<h1>hello<h1>";
+  const r=Math.floor(Math.random()*4)
+  const emoji=emojis[r]
+  document.getElementById("debug").innerHTML=`Debug: Random float: ${r}`;
+  document.getElementById("emoji").innerHTML=`${emoji}`;
 }
+window.onload=rand()
 </script>
 </body>
 </html>
