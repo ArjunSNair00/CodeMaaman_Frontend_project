@@ -30,7 +30,7 @@
 <script>
 function rand(){
   const emojis=["😄", "🤖", "🚀", "😎"];
-  const r=Math.random()
+  const r=Math.floor(Math.random()*10)+1
   console.log(r)
   document.getElementById("debug").innerHTML=`Random float: ${r}`;
   document.getElementById("emoji").innerHTML="<h1>hello<h1>";
