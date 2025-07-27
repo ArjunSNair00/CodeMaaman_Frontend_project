@@ -2,47 +2,47 @@
 <head>
   <title>emoji generator</title>
   <style>
-    body{
-      background: linear-gradient(to right,rgb(203, 75, 75),rgb(154, 41, 41));
-      /* margin: 0; */
-    }
-    #title{
-      font-family:fantasy;
-      color:rgb(255, 177, 60);
-      margin: 0; 
-      font-size: 80px;
-      /* height: 100vh; */
-    }
-    .emoji_gen{
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    #emoji{
-      position: relative;
-      width: 500px;
-      height: 500px;
-      z-index: 0; 
-    }
-    #emoji img{
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    }
-    #Randomize{
-      font-size: 30px;
-      color:yellow;
-      background: orange;
-      cursor: pointer;
-    }
-    #Randomize:hover{
-      background: rgb(218, 141, 0);
-    }
-    #Randomize:active{
-      color:red;
-    }
+  body{
+    background: linear-gradient(to right,rgb(203, 75, 75),rgb(154, 41, 41));
+    /* margin: 0; */
+  }
+  #title{
+    font-family:fantasy;
+    color:rgb(255, 177, 60);
+    margin: 0; 
+    font-size: 80px;
+    /* height: 100vh; */
+  }
+  .emoji_gen{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  #emoji{
+    position: relative;
+    width: 500px;
+    height: 500px;
+    z-index: 0; 
+  }
+  #emoji img{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  }
+  #Randomize{
+    font-size: 30px;
+    color:yellow;
+    background: orange;
+    cursor: pointer;
+  }
+  #Randomize:hover{
+    background: rgb(218, 141, 0);
+  }
+  #Randomize:active{
+    color:red;
+  }
   </style>
 </head>
 <body>
@@ -60,44 +60,43 @@
 </div>
 
 <script>
-function rand(){
-  // const emojis=["😀","😃","😄","😁","😆","😅","😂","🤣","🥲","🥹","☺️","😇"];
-  // const r=Math.floor(Math.random()*emojis.length)
-  // const count=1
-  const count_m=9;
-  const count_e=8;
-  const count_eb=2;
-  const count_o=3;
-  const count_f=2;
-  const emotion="happy";
-  const r_f=Math.floor(Math.random()*count_f);
-  const r_m=Math.floor(Math.random()*count_m);
-  const r_e=Math.floor(Math.random()*count_e);
-  const r_eb=Math.floor(Math.random()*count_eb);
-  const r_o=Math.floor(Math.random()*count_o);
-  const face=`emojis/face/${emotion}/${r_f}.svg`;
-  const mouth=`emojis/mouth/${emotion}/${r_m}.svg`;
-  const eyes=`emojis/eyes/${emotion}/${r_e}.svg`;
-  const eyebrows=`emojis/eyebrows/${emotion}/${r_eb}.svg`;
-  const other=`emojis/other/${emotion}/${r_o}.svg`;
-  // const r=Math.floor(Math.random()*count)
-  // const file = `emojis/mouth/happy/${r}.svg`;
-  // const emoji=emojis[r]
-  // document.getElementById("debug").innerHTML=`Debug: Random float: ${r}`;
-  // document.getElementById("emoji").innerHTML=`${emoji}`;
-  document.getElementById("debug").textContent =`image: ${face}, ${mouth}, ${eyes}, ${eyebrows}, ${other}`;
-  document.getElementById("face").innerHTML=`<img src="${face}" alt="face" />`;
-  document.getElementById("mouth").innerHTML=`<img src="${mouth}" alt="mouth" />`;
-  document.getElementById("eyes").innerHTML=`<img src="${eyes}" alt="eyes" />`;
-  document.getElementById("eyebrows").innerHTML=`<img src="${eyebrows}" alt="eyebrows" />`;
-  if (r_m==4 & (r_o==0 | r_o==1 | r_o==2)){
-    document.getElementById("other").innerHTML=`<img src="${other}" alt="other" />`;
-  }
-  else{
-    document.getElementById("other").innerHTML="";
+function rand() {
+const emotion = "happy";
+const parts = [ 
+{id:"face",count:2},
+{id:"mouth",count:9},
+{id:"eyes",count:9},
+{id:"eyebrows",count:2},
+{id:"other",count:3}
+];
+let debug="image: ";
+let random_i={};
+for (let i = 0;i<parts.length;i++) {
+  const part = parts[i];
+  const r = Math.floor(Math.random() * part.count);
+  const path = `emojis/${part.id}/${emotion}/${r}.svg`;
+  debug += `${path}, `;
+  random_i[part.id] = r;
+  if (part.id === "other") 
+  {
+    const r_m=random_i["mouth"];
+    if (r_m===4&&(r===0||r===1||r===2)) 
+    {
+      document.getElementById(part.id).innerHTML=`<img src="${path}" alt="${part.id}"/>`;
+    } 
+    else 
+    {
+      document.getElementById(part.id).innerHTML="";
+    }
+  } 
+  else 
+  {
+    document.getElementById(part.id).innerHTML=`<img src="${path}" alt="${part.id}"/>`;
   }
 }
-window.onload=rand()
+document.getElementById("debug").textContent=debug;
+}
+window.onload=rand;
 </script>
 </body>
 </html>
