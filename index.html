@@ -16,13 +16,16 @@
   .emoji_gen{
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: stretch;
   }
   #emoji{
+    flex: 1 1 45%;
+    max-width: 500px;
+    aspect-ratio: 1/1;
     position: relative;
-    width: 500px;
-    height: 500px;
-    z-index: 0; 
+    margin: auto;
+    /* width: 500px;
+    height: 500px; */
   }
   #emoji img{
   position: absolute;
@@ -43,32 +46,71 @@
   #Randomize:active{
     color:red;
   }
+  #emoji_output{
+    background: rgb(234, 82, 82);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    /* flex-direction: row;
+    align-items: center; */
+    gap: 40px;
+    padding: 20px;
+  }
+  #emotion_selector {
+    flex: 1 1 45%;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 10px;
+    color: white;
+    font-family: sans-serif;
+  }
   </style>
 </head>
 <body>
 <div class="emoji_gen">
 <h1 id="title">Random Emoji Generator</h1>
-<div id="emoji">
-<span id="face"></span>
-<span id="mouth"></span>
-<span id="eyebrows"></span>
-<span id="eyes"></span>
-<span id="other"></span>
-</div>
-<button id="Randomize" onclick="rand()">Randomize</button>
-<span id="debug"></span>
+  <div id="emoji_output">
+    <div id="emoji">
+    <span id="face"></span>
+    <span id="mouth"></span>
+    <span id="eyebrows"></span>
+    <span id="eyes"></span>
+    <span id="other"></span>
+  </div>
+  <div id="emotion_selector">
+    <h3>Select Emotion</h3>
+    <select id="emotions">
+      <option value="happy">Happy</option>
+      <option value="sad">Sad</option>
+    </select>
+    <button id="Randomize" onclick="rand()">Randomize</button>
+    <!-- <span id="debug"></span> -->
+  </div>
 </div>
 
 <script>
 function rand() {
-const emotion = "happy";
-const parts = [ 
+const emotion=document.getElementById("emotions").value;
+let parts=[]
+
+if (emotion=="happy"){
+parts = [ 
 {id:"face",count:2},
 {id:"mouth",count:9},
 {id:"eyes",count:9},
 {id:"eyebrows",count:2},
 {id:"other",count:3}
-];
+];}
+
+if (emotion=="sad"){
+parts = [ 
+{id:"face",count:2},
+{id:"mouth",count:1},
+{id:"eyes",count:2},
+{id:"eyebrows",count:2},
+{id:"other",count:1}
+];}
+
 let debug="image: ";
 let random_i={};
 for (let i = 0;i<parts.length;i++) {
