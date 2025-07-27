@@ -113,25 +113,25 @@
         <h2>Randomness Sliders (%)</h2>
         <div class="slider_group">
           <h4>Eyes: </h4>
-          <span id="eyes_value">100</span>
+          <label><span id="eyes_value">100</span>%</label>
           <input type="range" id="eyes_prob" min="0" max="100" value="100" oninput="update_label(this, 'eyes_value')">
         </div>
 
         <div class="slider_group">
           <h4>Eyebrows: </h4>
-          <span id="eyeb_value">100</span>
+          <label><span id="eyeb_value">100</span>%</label>
           <input type="range" id="eyeb_prob" min="0" max="100" value="100" oninput="update_label(this, 'eyeb_value')">
         </div>
 
         <div class="slider_group">
           <h4>Mouth: </h4>
-          <span id="mouth_value">100</span>
+          <label><span id="mouth_value">100</span>%</label>
           <input type="range" id="mouth_prob" min="0" max="100" value="100" oninput="update_label(this, 'mouth_value')">
         </div>
 
         <div class="slider_group">
           <h4>Other: </h4>
-          <span id="other_value">100</span>
+          <label><span id="other_value">100</span>%</label>
           <input type="range" id="other_prob" min="0" max="100" value="100" oninput="update_label(this, 'other_value')">
         </div>
       </div>
@@ -140,8 +140,13 @@
         <h2>Emotion Mix (%)</h2>
         <div class="slider_group">
           <h4>Happy: </h4>
-          <span id="happy_value">100</span>
+          <label><span id="happy_value">100</span>%</label>
           <input type="range" id="happy_prob" min="0" max="100" value="100" oninput="update_label(this, 'happy_value')">
+        </div>
+        <div class="slider_group">
+          <h4>Sad: </h4>
+          <label><span id="sad_value">100</span>%</label>
+          <input type="range" id="sad_prob" min="0" max="100" value="100" oninput="update_label(this, 'sad_value')">
         </div>
         <!-- <span id="debug"></span> -->
       </div>
@@ -150,76 +155,85 @@
   </div>
 <script>
 const last_chosen = {};
+
 function rand() {
 const eyes_prob = parseInt(document.getElementById("eyes_prob").value);
 const mouth_prob = parseInt(document.getElementById("mouth_prob").value);
 const eyebrows_prob = parseInt(document.getElementById("eyeb_prob").value);
 const other_prob = parseInt(document.getElementById("other_prob").value);
-const emotion=document.getElementById("emotions").value;
-let parts=[]
+// const emotion=document.getElementById("emotions").value;
 
-if (emotion=="happy"){
-parts = [ 
-{id:"face",count:2},
-{id:"mouth",count:9},
-{id:"eyes",count:9},
-{id:"eyebrows",count:2},
-{id:"other",count:3}
-];}
+const happy_mix = parseInt(document.getElementById("happy_prob").value);
+const sad_mix = parseInt(document.getElementById("sad_prob").value);
+const totalMix = happy_mix + sad_mix;
+const prob_distribution = {
+  happy: happy_mix / totalMix,
+  sad: sad_mix / totalMix
+};
 
-if (emotion=="sad"){
-parts = [ 
-{id:"face",count:2},
-{id:"mouth",count:4},
-{id:"eyes",count:2},
-{id:"eyebrows",count:2},
-{id:"other",count:1}
-];}
+const em_parts = {
+  happy: {
+    face: 2,
+    mouth: 9,
+    eyes: 9,
+    eyebrows: 2,
+    other: 3
+  },
+  sad: {
+    face: 2,
+    mouth: 4,
+    eyes: 2,
+    eyebrows: 2,
+    other: 1
+  }
+};
+
+const parts = ["face", "mouth", "eyes", "eyebrows", "other"];
 
 let debug="image: ";
 let random_i={};
-for (let i = 0;i<parts.length;i++) {
-  const part = parts[i];
-  let r;
-  let prob = 100;
-  if (part.id==="eyes") 
-    prob = eyes_prob;
-  if (part.id==="mouth") 
-    prob = mouth_prob;
-  if (part.id==="eyebrows") 
-    prob = eyebrows_prob;
-  if (part.id==="other") 
-    prob = other_prob;
+for (let i = 0; i < parts.length; i++) {
+  const part_id = parts[i];
+  const prob = {
+    eyes: eyes_prob,
+    mouth: mouth_prob,
+    eyebrows: eyebrows_prob,
+    other: other_prob
+  }[part_id] ?? 100;
 
-  if (prob===0 && last_chosen[part.id]!==undefined) {
-    r=last_chosen[part.id];
+  const emotion_pick = Math.random() < prob_distribution.happy ? "happy" : "sad";
+  const part_count = em_parts[emotion_pick][part_id];
+
+  let r;
+  if (prob===0 && last_chosen[part_id]!==undefined) {
+    r=last_chosen[part_id];
   } else if (prob < 100) {
     const shouldRandomize = Math.random()*100<prob;
-    r=shouldRandomize ? Math.floor(Math.random()*part.count):(last_chosen[part.id]??0);
+    r=shouldRandomize ? Math.floor(Math.random()*part_count):(last_chosen[part_id]??0);
   } else {
-    r=Math.floor(Math.random()*part.count);
+    r=Math.floor(Math.random()*part_count);
   }
-  last_chosen[part.id] = r;
+  last_chosen[part_id] = r;
 
-  const path = `emojis/${part.id}/${emotion}/${r}.svg`;
+  const path = `emojis/${part_id}/${emotion_pick}/${r}.svg`;
 
   debug += `${path}, `;
-  random_i[part.id] = r;
-  if (part.id === "other") 
+  random_i[part_id] = r;
+  if (part_id === "other") 
   {
     const r_m=random_i["mouth"];
     if (r_m===4&&(r===0||r===1||r===2)) 
     {
-      document.getElementById(part.id).innerHTML=`<img src="${path}" alt="${part.id}"/>`;
+      document.getElementById(part_id).innerHTML=`<img src="${path}" alt="${part_id}"/>`;
     } 
     else 
     {
-      document.getElementById(part.id).innerHTML="";
+      document.getElementById(part_id).innerHTML="";
     }
   } 
   else 
   {
-    document.getElementById(part.id).innerHTML=`<img src="${path}" alt="${part.id}"/>`;
+    document.getElementById(part_id).innerHTML=`<img src="${path}" alt="${part_id}"/>`;
   }
 }
 document.getElementById("debug").textContent=debug;
