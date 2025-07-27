@@ -44,8 +44,8 @@
 
 <script>
 function rand(){
-  const emojis=["😄", "🤖", "🚀", "😎"];
-  const r=Math.floor(Math.random()*4)
+  const emojis=["😀","😃","😄","😁","😆","😅","😂","🤣","🥲","🥹","☺️","😇"];
+  const r=Math.floor(Math.random()*emojis.length)
   const emoji=emojis[r]
   document.getElementById("debug").innerHTML=`Debug: Random float: ${r}`;
   document.getElementById("emoji").innerHTML=`${emoji}`;
