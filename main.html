@@ -8,23 +8,33 @@
     }
     #title{
       color:rgb(255, 177, 60);
-      margin: 0;
+      margin: 0; 
       font-size: 80px;
       /* height: 100vh; */
     }
     .emoji_gen{
       display: flex;
       flex-direction: column;
-      justify-content: center;
       align-items: center;
     }
     #emoji{
-      font-size: 200px;
+      position: relative;
+      width: 500px;
+      height: 500px;
+      z-index: 0; 
+    }
+    #emoji img{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     }
     #Randomize{
       font-size: 30px;
       color:yellow;
       background: orange;
+      cursor: pointer;
     }
     #Randomize:hover{
       background: rgb(218, 141, 0);
@@ -37,18 +47,39 @@
 <body>
 <div class="emoji_gen">
 <h1 id="title">Emoji Generator</h1>
-<span id="emoji"></span>
+<div id="emoji">
+<span id="face"></span>
+<span id="mouth"></span>
+<span id="eyes"></span>
+</div>
 <button id="Randomize" onclick="rand()">Randomize</button>
 <span id="debug"></span>
 </div>
 
 <script>
 function rand(){
-  const emojis=["😀","😃","😄","😁","😆","😅","😂","🤣","🥲","🥹","☺️","😇"];
-  const r=Math.floor(Math.random()*emojis.length)
-  const emoji=emojis[r]
-  document.getElementById("debug").innerHTML=`Debug: Random float: ${r}`;
-  document.getElementById("emoji").innerHTML=`${emoji}`;
+  // const emojis=["😀","😃","😄","😁","😆","😅","😂","🤣","🥲","🥹","☺️","😇"];
+  // const r=Math.floor(Math.random()*emojis.length)
+  // const count=1
+  const count_m=2;
+  const count_e=3;
+  const count_f=2;
+  const emotion="happy";
+  const r_f=Math.floor(Math.random()*count_f);
+  const r_m=Math.floor(Math.random()*count_m);
+  const r_e=Math.floor(Math.random()*count_e);
+  const face=`emojis/face/${emotion}/${r_f}.svg`;
+  const mouth=`emojis/mouth/${emotion}/${r_m}.svg`;
+  const eyes=`emojis/eyes/${emotion}/${r_e}.svg`;
+  // const r=Math.floor(Math.random()*count)
+  // const file = `emojis/mouth/happy/${r}.svg`;
+  // const emoji=emojis[r]
+  // document.getElementById("debug").innerHTML=`Debug: Random float: ${r}`;
+  // document.getElementById("emoji").innerHTML=`${emoji}`;
+  document.getElementById("debug").textContent =`image: ${face}, ${mouth}, ${eyes}`;
+  document.getElementById("face").innerHTML = `<img src="${face}" alt="face" />`;
+  document.getElementById("mouth").innerHTML = `<img src="${mouth}" alt="mouth" />`;
+  document.getElementById("eyes").innerHTML = `<img src="${eyes}" alt="eyes" />`;
 }
 window.onload=rand()
 </script>
