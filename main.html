@@ -24,12 +24,15 @@
 <h1 id="title">Emoji Generator</h1>
 <span id="emoji"></span>
 <button id="Randomize" onclick="rand()">Randomize</button>
+<span id="debug"></span>
 </div>
 
 <script>
 function rand(){
   const emojis=["😄", "🤖", "🚀", "😎"];
-  console.log(Math.random())
+  const r=Math.random()
+  console.log(r)
+  document.getElementById("debug").innerHTML="Random float: ${r}";
   document.getElementById("emoji").innerHTML="<h1>hello<h1>";
 }
 </script>
