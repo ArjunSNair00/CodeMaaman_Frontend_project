@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <head>
-  <title>Emoji Generator</title>
+  <title>emoji generator</title>
   <style>
     body{
       background: linear-gradient(to right,rgb(203, 75, 75),rgb(154, 41, 41));
       /* margin: 0; */
     }
     #title{
+      font-family:fantasy;
       color:rgb(255, 177, 60);
       margin: 0; 
       font-size: 80px;
@@ -46,11 +47,13 @@
 </head>
 <body>
 <div class="emoji_gen">
-<h1 id="title">Emoji Generator</h1>
+<h1 id="title">Random Emoji Generator</h1>
 <div id="emoji">
 <span id="face"></span>
 <span id="mouth"></span>
 <span id="eyes"></span>
+<span id="eyebrows"></span>
+<span id="other"></span>
 </div>
 <button id="Randomize" onclick="rand()">Randomize</button>
 <span id="debug"></span>
@@ -61,25 +64,38 @@ function rand(){
   // const emojis=["😀","😃","😄","😁","😆","😅","😂","🤣","🥲","🥹","☺️","😇"];
   // const r=Math.floor(Math.random()*emojis.length)
   // const count=1
-  const count_m=2;
-  const count_e=3;
+  const count_m=5;
+  const count_e=5;
+  const count_eb=2;
+  const count_o=2;
   const count_f=2;
   const emotion="happy";
   const r_f=Math.floor(Math.random()*count_f);
   const r_m=Math.floor(Math.random()*count_m);
   const r_e=Math.floor(Math.random()*count_e);
+  const r_eb=Math.floor(Math.random()*count_eb);
+  const r_o=Math.floor(Math.random()*count_o);
   const face=`emojis/face/${emotion}/${r_f}.svg`;
   const mouth=`emojis/mouth/${emotion}/${r_m}.svg`;
   const eyes=`emojis/eyes/${emotion}/${r_e}.svg`;
+  const eyebrows=`emojis/eyebrows/${emotion}/${r_eb}.svg`;
+  const other=`emojis/other/${emotion}/${r_o}.svg`;
   // const r=Math.floor(Math.random()*count)
   // const file = `emojis/mouth/happy/${r}.svg`;
   // const emoji=emojis[r]
   // document.getElementById("debug").innerHTML=`Debug: Random float: ${r}`;
   // document.getElementById("emoji").innerHTML=`${emoji}`;
-  document.getElementById("debug").textContent =`image: ${face}, ${mouth}, ${eyes}`;
-  document.getElementById("face").innerHTML = `<img src="${face}" alt="face" />`;
-  document.getElementById("mouth").innerHTML = `<img src="${mouth}" alt="mouth" />`;
-  document.getElementById("eyes").innerHTML = `<img src="${eyes}" alt="eyes" />`;
+  document.getElementById("debug").textContent =`image: ${face}, ${mouth}, ${eyes}, ${eyebrows}, ${other}`;
+  document.getElementById("face").innerHTML=`<img src="${face}" alt="face" />`;
+  document.getElementById("mouth").innerHTML=`<img src="${mouth}" alt="mouth" />`;
+  document.getElementById("eyes").innerHTML=`<img src="${eyes}" alt="eyes" />`;
+  document.getElementById("eyebrows").innerHTML=`<img src="${eyebrows}" alt="eyebrows" />`;
+  if (r_m==4){
+    document.getElementById("other").innerHTML=`<img src="${other}" alt="other" />`;
+  }
+  else{
+    document.getElementById("other").innerHTML="";
+  }
 }
 window.onload=rand()
 </script>
