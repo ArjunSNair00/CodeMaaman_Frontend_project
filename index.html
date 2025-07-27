@@ -36,25 +36,27 @@
 
   .meme-text {
     position: absolute;  /* <-- Add this */
-    font-size: 24px;
+    font-size: 30px;
     font-weight: bold;
     text-align: center;
     color: white;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
-    -webkit-text-stroke: 1.5px black;
     z-index: 5;
     pointer-events: none;
     width: 100%;  /* Ensure it stretches across the emoji */
   }
 
     #topText {
-    top: 10px;
+    top: -40px;
   }
 
   #bottomText {
-    bottom: 10px;
+    bottom: -40px;
   }
-
+  #top_bottom_text{
+    display: flex;
+    flex-direction: row;
+  }
   #emoji img{
   position: absolute;
   top: 0;
@@ -193,17 +195,17 @@
   <button id="Randomize" onclick="rand(); randomizeCaptions();">Randomize</button>
 
   <h2>Emotion Captions</h2>
-  <div>
+  <div class="top_bottom_text">
     <strong>Happy</strong><br>
     Top: <input type="text" id="custom_happy_top" value="Feeling great!"><br>
     Bottom: <input type="text" id="custom_happy_bottom" value="Keep smiling!"><br>
   </div>
-  <div>
+  <div class="top_bottom_text">
     <strong>Sad</strong><br>
     Top: <input type="text" id="custom_sad_top" value="Not my day..."><br>
     Bottom: <input type="text" id="custom_sad_bottom" value="Feeling blue."><br>
   </div>
-  <div>
+  <div class="top_bottom_text">
     <strong>Angry</strong><br>
     Top: <input type="text" id="custom_angry_top" value="So annoyed!"><br>
     Bottom: <input type="text" id="custom_angry_bottom" value="Back off!"><br>
