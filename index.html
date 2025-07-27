@@ -21,7 +21,7 @@
     align-items: stretch;
   }
   #emoji{
-    flex: 1 1 45%;
+    flex: 1 1 40%;
     max-width: 500px;
     aspect-ratio: 1/1;
     position: relative;
@@ -51,16 +51,17 @@
   #emoji_output{
     background: rgb(234, 82, 82);
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    /* flex-wrap: wrap; */
     justify-content: space-between;
     /* flex-direction: row;
     align-items: center; */
     gap: 40px;
     padding: 20px;
   }
-  #emotion_selector {
-    display: flex;
-    /* flex: 1 1 45%; */
+  #settings {
+    display: flex; 
+    width: 50%;
     background: rgba(255, 255, 255, 0.1);
     padding: 20px;
     border-radius: 10px;
@@ -70,13 +71,27 @@
   }
     input[type="range"] { /*for some reason slider was getting stuck*/
     position: relative;
+    width: 200px;
     z-index: 10;
+  }
+  #sliders_wrap{
+    display: flex;
+    flex-direction: row;
+  }
+
+  #randomness_sliders,#emotion_mix {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
   }
   </style>
 </head>
 <body>
+
 <div class="emoji_gen">
 <h1 id="title">Random Emoji Generator</h1>
+
   <div id="emoji_output">
     <div id="emoji">
     <span id="face"></span>
@@ -85,43 +100,54 @@
     <span id="eyes"></span>
     <span id="other"></span>
   </div>
-  <div id="emotion_selector">
+
+  <div id="settings">
     <h2>Select Emotion</h2>
     <select id="emotions">
       <option value="happy">Happy</option>
       <option value="sad">Sad</option>
     </select>
-    <h2>Randomness Sliders (%)</h2>
 
-    <div class="slider_group">
-      <h4>Eyes: </h4>
-      <span id="eyes_value">100</span>
-      <input type="range" id="eyes_prob" min="0" max="100" value="100" oninput="update_label(this, 'eyes_value')">
+    <div id="sliders_wrap">
+      <div id="randomness_sliders">
+        <h2>Randomness Sliders (%)</h2>
+        <div class="slider_group">
+          <h4>Eyes: </h4>
+          <span id="eyes_value">100</span>
+          <input type="range" id="eyes_prob" min="0" max="100" value="100" oninput="update_label(this, 'eyes_value')">
+        </div>
+
+        <div class="slider_group">
+          <h4>Eyebrows: </h4>
+          <span id="eyeb_value">100</span>
+          <input type="range" id="eyeb_prob" min="0" max="100" value="100" oninput="update_label(this, 'eyeb_value')">
+        </div>
+
+        <div class="slider_group">
+          <h4>Mouth: </h4>
+          <span id="mouth_value">100</span>
+          <input type="range" id="mouth_prob" min="0" max="100" value="100" oninput="update_label(this, 'mouth_value')">
+        </div>
+
+        <div class="slider_group">
+          <h4>Other: </h4>
+          <span id="other_value">100</span>
+          <input type="range" id="other_prob" min="0" max="100" value="100" oninput="update_label(this, 'other_value')">
+        </div>
+      </div>
+
+      <div id="emotion_mix">
+        <h2>Emotion Mix (%)</h2>
+        <div class="slider_group">
+          <h4>Happy: </h4>
+          <span id="happy_value">100</span>
+          <input type="range" id="happy_prob" min="0" max="100" value="100" oninput="update_label(this, 'happy_value')">
+        </div>
+        <!-- <span id="debug"></span> -->
+      </div>
     </div>
-
-    <div class="slider_group">
-      <h4>Eyebrows: </h4>
-      <span id="eyeb_value">100</span>
-      <input type="range" id="eyeb_prob" min="0" max="100" value="100" oninput="update_label(this, 'eyeb_value')">
-    </div>
-
-    <div class="slider_group">
-      <h4>Mouth: </h4>
-      <span id="mouth_value">100</span>
-      <input type="range" id="mouth_prob" min="0" max="100" value="100" oninput="update_label(this, 'mouth_value')">
-    </div>
-
-    <div class="slider_group">
-      <h4>Other: </h4>
-      <span id="other_value">100</span>
-      <input type="range" id="other_prob" min="0" max="100" value="100" oninput="update_label(this, 'other_value')">
-    </div>
-
     <button id="Randomize" onclick="rand()">Randomize</button>
-    <!-- <span id="debug"></span> -->
   </div>
-</div>
-
 <script>
 const last_chosen = {};
 function rand() {
@@ -198,10 +224,47 @@ for (let i = 0;i<parts.length;i++) {
 }
 document.getElementById("debug").textContent=debug;
 }
-window.onload=rand;
+
 function update_label(slider, labelId) {
-document.getElementById(labelId).textContent = slider.value;
+document.getElementById(labelId).textContent = slider.value;}
+
+
+
+function preloadImages() {
+  const em_parts = {
+    happy: {
+      face: 2,
+      mouth: 9,
+      eyes: 9,
+      eyebrows: 2,
+      other: 3
+    },
+    sad: {
+      face: 2,
+      mouth: 4,
+      eyes: 2,
+      eyebrows: 2,
+      other: 1
+    }
+  };
+
+  for (const emotion in em_parts) {
+    const parts = em_parts[emotion];
+    for (const part in parts) {
+      const count = parts[part];
+      for (let i = 0; i < count; i++) {
+        const img = new Image();
+        img.src = `emojis/${part}/${emotion}/${i}.svg`;
+      }
+    }
   }
+}
+
+window.onload = () => {
+  preloadImages(); 
+  rand();           
+};
+
 </script>
 </body>
 </html>
