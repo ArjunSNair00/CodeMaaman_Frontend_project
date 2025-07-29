@@ -12,7 +12,7 @@
     font-family:fantasy;
     color:rgb(255, 177, 60);
     margin: 0; 
-    font-size: 80px;
+    font-size: 50px;
     /* height: 100vh; */
   }
   .emoji_gen{
@@ -30,12 +30,13 @@
     max-width: 500px;
     aspect-ratio: 1/1;
     margin: auto;
+    top: -10px;
     /* width: 500px;
     height: 500px; */
   }
 
   .meme-text {
-    position: absolute;  /* <-- Add this */
+    position: absolute; 
     font-size: 30px;
     font-weight: bold;
     text-align: center;
@@ -43,20 +44,65 @@
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
     z-index: 5;
     pointer-events: none;
-    width: 100%;  /* Ensure it stretches across the emoji */
+    width: 100%; 
   }
 
-    #topText {
-    top: -40px;
+  #topText {
+    top: -8%;
+    left: 50%;
+    transform: translateX(-50%);
   }
 
   #bottomText {
-    bottom: -40px;
+    bottom: -8%;
+    left: 50%;
+    transform: translateX(-50%);
   }
-  #top_bottom_text{
+
+
+  .top_bottom_text {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
+    gap: 5px;
+    background-color: rgba(255, 255, 255, 0.05);
+    padding: 10px 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    border-left: 4px solid orange;
   }
+
+  .top_bottom_text strong {
+    font-size: 20px;
+    color: #ffcc66;
+    margin-bottom: 5px;
+  }
+
+  .top_bottom_text input[type="text"] {
+    padding: 6px 10px;
+    font-size: 16px;
+    background: rgb(227, 133, 133);
+    color: #ffffff;
+    border: 1px solid #555;
+    border-radius: 4px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  #settings h2 {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    color: #ffe28a;
+    font-size: 22px;
+  }
+
+  #settings label {
+    margin-top: 10px;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
   #emoji img{
   position: absolute;
   top: 0;
@@ -64,11 +110,19 @@
   width: 100%;
   height: 100%;
   }
-  #Randomize{
+  #Randomize {
     font-size: 30px;
-    color:yellow;
+    width: 50%;
+    padding: 20px;
+    position: relative;
+    top: -120px;
+    left: 350px;
+    color: yellow;
     background: orange;
     cursor: pointer;
+    border: none;
+    border-radius: 10px;
+    text-align: center;
   }
   #Randomize:hover{
     background: rgb(218, 141, 0);
@@ -90,8 +144,8 @@
   #settings {
     display: flex; 
     width: 50%;
-    max-height: 600px; /* 👈 Adjust as needed */
-    overflow-y: auto;  /* 👈 Enables vertical scroll */
+    max-height: 550px; 
+    overflow-y: auto;  
     background: rgba(255, 255, 255, 0.1);
     padding: 20px;
     border-radius: 10px;
@@ -108,6 +162,7 @@
   }
   #sliders_wrap{
     display: flex;
+    margin: 20px;
     flex-direction: row;
   }
 
@@ -115,7 +170,6 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 10px;
   }
   select{
     color:rgb(255, 177, 60);
@@ -125,12 +179,32 @@
   #emotion_mix {
     display: none;
   }
+
+  #face{
+    z-index: 0;
+  }
+
+  #mouth{
+    z-index: 2;
+  }
+
+  #eyebrows{
+    z-index: 3;
+  }
+
+  #eyes{
+    z-index: 4;
+  }
+
+  #other{
+    z-index: 5;
+  }
   </style>
 </head>
 <body>
 
 <div class="emoji_gen">
-<h1 id="title">Random Emoji Generator</h1>
+<h1 id="title">Emoji Morpher</h1>
   <div id="emoji_output">
     <div id="emoji">
     <div class="meme-text" id="topText">Top Text</div>
@@ -147,6 +221,7 @@
     <select id="emotions">
       <option value="happy">Happy</option>
       <option value="sad">Sad</option>
+      <option value="angry">Angry</option> 
       <option value="random" selected>Random</option>
     </select>
 
@@ -190,10 +265,14 @@
           <label><span id="sad_value">100</span>%</label>
           <input type="range" id="sad_prob" min="0" max="100" value="100" oninput="update_label(this, 'sad_value')">
         </div>
+        <div class="slider_group">
+          <h4>Angry: </h4>
+          <label><span id="angry_value">100</span>%</label>
+          <input type="range" id="angry_prob" min="0" max="100" value="100" oninput="update_label(this, 'angry_value')">
+        </div>
       </div>
     </div>
-  <button id="Randomize" onclick="rand(); randomizeCaptions();">Randomize</button>
-
+    <button id="Randomize" onclick="rand(); randomizeCaptions();">Randomize</button>
   <h2>Emotion Captions</h2>
   <div class="top_bottom_text">
     <strong>Happy</strong><br>
@@ -214,45 +293,61 @@
     <input type="checkbox" id="separate_caption_random">
     Randomize top & bottom separately
   </label>
+  <label>
+    <input type="checkbox" id="use_random_captions">
+    Use random captions (ignore custom inputs)
+  </label>
 
   </div>
 
 <script>
 const last_chosen = {};
 
-function rand() {
-const eyes_prob = parseInt(document.getElementById("eyes_prob").value);
-const mouth_prob = parseInt(document.getElementById("mouth_prob").value);
-const eyebrows_prob = parseInt(document.getElementById("eyeb_prob").value);
-const other_prob = parseInt(document.getElementById("other_prob").value);
-// const emotion=document.getElementById("emotions").value;
-
-const happy_mix = parseInt(document.getElementById("happy_prob").value);
-const sad_mix = parseInt(document.getElementById("sad_prob").value);
-const total_mix = happy_mix + sad_mix || 1;
-const prob_distribution = {
-  happy: happy_mix / total_mix,
-  sad: sad_mix / total_mix
-};
-
 const em_parts = {
   happy: {
     face: 2,
-    mouth: 9,
-    eyes: 9,
+    mouth: 10,
+    eyes: 10,
     eyebrows: 2,
     other: 3
   },
   sad: {
     face: 2,
-    mouth: 4,
-    eyes: 2,
+    mouth: 7,
+    eyes: 5,
+    eyebrows: 3,
+    other: 2
+  },
+  angry: {
+    face: 2,
+    mouth: 1,
+    eyes: 1,
     eyebrows: 2,
     other: 1
   }
 };
 
 const parts = ["face", "mouth", "eyes", "eyebrows", "other"];
+
+function rand() {
+  const eyes_prob = parseInt(document.getElementById("eyes_prob").value);
+  const mouth_prob = parseInt(document.getElementById("mouth_prob").value);
+  const eyebrows_prob = parseInt(document.getElementById("eyeb_prob").value);
+  const other_prob = parseInt(document.getElementById("other_prob").value);
+  // const emotion=document.getElementById("emotions").value;
+  const emotionSelect = document.getElementById("emotions");
+  const selectedEmotion = emotionSelect.value;
+
+  const happy_mix = parseInt(document.getElementById("happy_prob").value);
+  const sad_mix = parseInt(document.getElementById("sad_prob").value);
+  const angry_mix = parseInt(document.getElementById("angry_prob")?.value || 0);
+
+  const total_mix = happy_mix + sad_mix + angry_mix || 1;
+  const prob_distribution = {
+    happy: happy_mix / total_mix,
+    sad: sad_mix / total_mix,
+    angry: angry_mix / total_mix
+  };
 
 let random_i={};
 for (let i = 0; i < parts.length; i++) {
@@ -264,7 +359,16 @@ for (let i = 0; i < parts.length; i++) {
     other: other_prob
   }[part_id] ?? 100;
 
-  const emotion_pick = Math.random() < prob_distribution.happy ? "happy" : "sad";
+  let emotion_pick;
+  if (selectedEmotion !== "random") {
+    emotion_pick = selectedEmotion;
+  } else {
+    const r = Math.random();
+    if (r < prob_distribution.happy) emotion_pick = "happy";
+    else if (r < prob_distribution.happy + prob_distribution.sad) emotion_pick = "sad";
+    else emotion_pick = "angry";
+  }
+
   const part_count = em_parts[emotion_pick][part_id];
 
   let r;
@@ -281,18 +385,34 @@ for (let i = 0; i < parts.length; i++) {
   const path = `emojis/${part_id}/${emotion_pick}/${r}.svg`;
 
   random_i[part_id] = r;
-  if (part_id === "other") 
-  {
-    const r_m=random_i["mouth"];
-    if (r_m===4&&(r===0||r===1||r===2)) 
-    {
-      document.getElementById(part_id).innerHTML=`<img src="${path}" alt="${part_id}"/>`;
-    } 
-    else 
-    {
-      document.getElementById(part_id).innerHTML="";
+if (part_id === "other") {
+  const r_m = random_i["mouth"];
+  const container = document.getElementById(part_id);
+
+  if (r_m === 4 && (r === 0 || r === 1 || r === 2)) {
+    const img = document.createElement("img");
+    img.src = path;
+    img.alt = part_id;
+    img.style.position = "absolute";
+    img.style.width = "100%";
+    img.style.height = "100%";
+
+    if (r === 1) {
+      img.style.zIndex = "5"; 
+    } else if (r === 0) {
+      img.style.zIndex = "20";
+    } else if (r === 2) {
+      img.style.zIndex = "15"; 
+    } else {
+      img.style.zIndex = "10"; 
     }
-  } 
+
+    container.innerHTML = "";
+    container.appendChild(img);
+  } else {
+    container.innerHTML = "";
+  }
+}
   else 
   {
     document.getElementById(part_id).innerHTML=`<img src="${path}" alt="${part_id}"/>`;
@@ -306,23 +426,6 @@ document.getElementById(labelId).textContent = slider.value;}
 
 
 function preload_imgs() {
-  const em_parts = {
-    happy: {
-      face: 2,
-      mouth: 9,
-      eyes: 9,
-      eyebrows: 2,
-      other: 3
-    },
-    sad: {
-      face: 2,
-      mouth: 4,
-      eyes: 2,
-      eyebrows: 2,
-      other: 1
-    }
-  };
-
   for (const emotion in em_parts) {
     const parts = em_parts[emotion];
     for (const part in parts) {
@@ -397,13 +500,21 @@ function randomizeCaptions() {
   }
 
   function getCustomOrRandom(emotion, position) {
+    const useRandom = document.getElementById("use_random_captions").checked;
+
+    if (useRandom) {
+      return getRandomCaption(emotion);
+    }
+
     const inputId = `custom_${emotion}_${position}`;
     const custom = document.getElementById(inputId);
     if (custom && custom.value.trim()) {
       return custom.value.trim();
     }
+
     return getRandomCaption(emotion);
   }
+
 
   let topCaption = getCustomOrRandom(topEmotion, 'top');
   let bottomCaption = getCustomOrRandom(bottomEmotion, 'bottom');
@@ -415,7 +526,6 @@ function randomizeCaptions() {
     }
   }
 
-  // ✅ Only update text on the emoji
   document.getElementById("topText").textContent = topCaption;
   document.getElementById("bottomText").textContent = bottomCaption;
 }
