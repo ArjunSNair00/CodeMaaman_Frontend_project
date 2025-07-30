@@ -7,4 +7,4 @@ Emojis have separate randomness for facial features (eyes,mouth,eyebrows), so we
 
 Text can be either randomized or be given from input
 
-upcoming feature: ability to use your own drawings or png files for the emoji parts, and to download the emojis in batch or single file. 
+upcoming feature: ability to use your own drawings or png files for the emoji parts, and to download random emojis in batch or single file. 
