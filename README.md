@@ -1,4 +1,4 @@
-Emoji Morpher
+**Emoji Morpher**
 
 It uses weighted randomness to generate new emojis.
 We can mix emotions to our liking for the emoji.
